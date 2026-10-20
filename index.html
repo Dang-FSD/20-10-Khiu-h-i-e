@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#fcf8f2">
+    <meta name="description" content="Khu vườn hoa nở rộ tràn màn hình và bức tâm thư đong đầy tình cảm dành tặng 6 bạn nữ nhân ngày 20/10.">
+    <title>Món quà bất ngờ</title>
+
+    <!-- Google Fonts: Hỗ trợ tiếng Việt tuyệt đối và kiểu chữ sang trọng -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Dancing+Script:wght@600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="styles.css">
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <!-- Canvas toàn màn hình mô phỏng cánh hoa 3D rơi lượn, phấn hoa & đom đóm ánh sáng -->
+    <canvas id="ambient-canvas" class="ambient-canvas" aria-hidden="true"></canvas>
+
+    <!-- Họa tiết nhiễu hạt siêu mịn vintage -->
+    <div class="vintage-grain" aria-hidden="true"></div>
+
+    <audio id="bg-music" src="./music/audio_TINH HÀ _SAY HI__download.mp3" loop preload="auto"></audio>
+
+    <!-- HIỆU ỨNG HOA MỌC LAN DẦN KÍN MÀN HÌNH (FULLSCREEN BLOOM WAVE OVERLAY) -->
+    <div class="bloom-spread-overlay" id="bloom-spread-overlay" aria-hidden="true"></div>
+
+    <!-- KHUNG HOA VIỀN BỐ CỤC CHUẨN XÁC KHÔNG LỆCH (PERMANENT GARDEN CANOPY) -->
+    <div class="fullscreen-blooming-garden" id="fullscreen-garden" aria-hidden="true"></div>
+
+    <!-- KHUNG CẢNH DUY NHẤT (THE LIVING STAGE) - KHÔNG CHUYỂN TRANG -->
+    <main class="living-stage" id="living-stage">
+      
+      <!-- Hào quang nắng sớm & chiều sâu không gian -->
+      <div class="sunbeam-glow" aria-hidden="true"></div>
+      <div class="ambient-orb orb-1" aria-hidden="true"></div>
+      <div class="ambient-orb orb-2" aria-hidden="true"></div>
+
+      <!-- PHẦN 1: BÔNG HOA KHỞI NGUYÊN (NÚT BẤM DÙNG HÌNH HOA THẬT ĐÃ TÁCH NỀN) -->
+      <section class="initial-hero" id="initial-hero" aria-label="Lời mời mở vườn hoa 20/10">
+        <div class="hero-badge">
+          <span class="badge-spark">✦</span>
+          <span>Ngày Phụ Nữ Việt Nam · 20/10</span>
+          <span class="badge-spark">✦</span>
+        </div>
+
+        <h1 class="hero-title" id="hero-title">
+          Gửi những đóa hoa<br>
+          <span class="title-highlight">đẹp nhất của tụi mình</span>
+        </h1>
+
+        <p class="hero-subtext" id="hero-subtext">
+          Chạm vào đóa hoa để đánh thức khu vườn rực rỡ đang chờ đón bạn...
+        </p>
+
+        <!-- Nút đóa hoa trung tâm ghép từ hình hoa thật đã tách nền -->
+        <div class="flower-trigger-wrap">
+          <button class="main-flower-button" id="bloom-trigger-btn" type="button" aria-label="Chạm vào đóa hoa để nở rộ cả khu vườn 20/10">
+            <!-- Vầng sáng hào quang xung quanh bông hoa -->
+            <div class="flower-aura" aria-hidden="true"></div>
+
+            <div class="button-flower-assembly">
+              <!-- Đóa hoa thật tách nền với nhịp thở tự nhiên -->
+              <div class="real-flower-head" id="hero-flower-head">
+                <img src="img/Hoa_1.png" alt="Đóa hoa 20/10" class="hero-flower-img" id="hero-flower-img">
+                <div class="flower-glow-core"></div>
+                <div class="flower-halo-ring"></div>
+              </div>
+
+              <!-- Thân và lá cây uốn lượn tự nhiên -->
+              <svg class="flower-stem-svg" viewBox="0 0 120 200" aria-hidden="true">
+                <defs>
+                  <linearGradient id="stem-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#739a68" />
+                    <stop offset="60%" stop-color="#4d7443" />
+                    <stop offset="100%" stop-color="#34542d" />
+                  </linearGradient>
+                  <linearGradient id="leaf-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#8bb77f" />
+                    <stop offset="100%" stop-color="#446c3b" />
+                  </linearGradient>
+                </defs>
+                <path class="svg-stem" d="M60 15 C56 75 72 130 58 198" stroke="url(#stem-grad)" stroke-width="7" stroke-linecap="round" fill="none" />
+                <path class="svg-leaf leaf-left" d="M59 85 C24 55 6 78 30 102 C46 114 58 102 59 85 Z" fill="url(#leaf-grad)" />
+                <path class="svg-leaf leaf-right" d="M61 120 C96 90 114 112 90 138 C74 150 62 138 61 120 Z" fill="url(#leaf-grad)" />
+              </svg>
+            </div>
+
+            <!-- Nhãn mời chạm -->
+            <div class="flower-prompt">
+              <span class="prompt-icon">✿</span>
+              <span class="prompt-text">Chạm vào hoa để nở rộ</span>
+              <span class="prompt-icon">✿</span>
+            </div>
+          </button>
+        </div>
+
+        <p class="hero-foot-note">Dành riêng cho các chị em tuyệt vời của Khiu hỏi e ♡</p>
+      </section>
+
+      <!-- PHẦN 2: KHU VƯỜN HOA NỞ RỘ & VÒNG CARD 6 NGƯỜI & TÂM THƯ (LIÊN TỤC TRÊN MÀN HÌNH) -->
+      <section class="bloomed-universe" id="bloomed-universe" aria-hidden="true">
+
+        <!-- Tiêu đề mở rộng khi vườn hoa đã nở -->
+        <header class="celebration-header">
+          <div class="pill-tag">
+            <span class="pill-dot"></span>
+            <span>Khu Vườn Nở Rộ · 20 tháng 10</span>
+          </div>
+          <h2 class="celebration-title">
+            Mỗi người một sắc hương riêng<br>
+            <em>cùng nhau tỏa sáng rực rỡ</em>
+          </h2>
+          <p class="celebration-subtitle">
+            Cảm ơn 6 bông hoa tuyệt đẹp đã luôn mang lại niềm vui, nụ cười và những khoảnh khắc ấm áp nhất cho mọi người!
+          </p>
+        </header>
+
+        <!-- DẢI CARD 6 NGƯỜI CHẠY TỪNG THẺ VÒNG LẶP SPOTLIGHT TỪ TRÁI SANG PHẢI -->
+        <section class="carousel-block" aria-label="Vòng thẻ 6 người bạn">
+          <div class="carousel-subhead">
+            <span class="line-deco"></span>
+            <span class="subhead-title">✿ 6 ĐÓA HOA CỦA NHÓM KHIU HỎI E ✿</span>
+            <span class="line-deco"></span>
+          </div>
+
+          <!-- Bộ điều khiển carousel -->
+          <div class="spotlight-carousel-wrapper">
+            <button class="carousel-arrow arrow-left" id="carousel-prev-btn" type="button" aria-label="Thẻ trước">‹</button>
+            
+            <div class="spotlight-carousel-stage" id="spotlight-carousel">
+              <div class="spotlight-carousel-track" id="carousel-track">
+                
+                <!-- THẺ 1: CẨM TIÊN -->
+                <article class="friend-card card-theme-pink" data-index="0" data-name="Cẩm Tiên">
+                  <div class="card-glow-bg"></div>
+                  <div class="card-flower-badge">
+                    <img src="./img/avt/Cam_Tien.jpg" alt="Hoa Hồng Phấn - Cẩm Tiên" loading="lazy">
+                    <span class="badge-ring"></span>
+                  </div>
+                  <h3 class="card-name">Cẩm Tiên</h3>
+                  <p class="card-flower-name">✿ Chủ thầu Khiu hỏi e</p>
+                  <div class="card-divider"></div>
+                </article>
+
+                <!-- THẺ 2: NGỌC MAI -->
+                <article class="friend-card card-theme-purple" data-index="1" data-name="Ngọc Mai">
+                  <div class="card-glow-bg"></div>
+                  <div class="card-flower-badge">
+                    <img src="./img/avt/Ngoc_Mai.jpg" alt="Hoa Hồng Tím - Ngọc Mai" loading="lazy">
+                    <span class="badge-ring"></span>
+                  </div>
+                  <h3 class="card-name">Ngọc Mai</h3>
+                  <p class="card-flower-name">✿ Mai đẹt ti ni</p>
+                  <div class="card-divider"></div>
+                </article>
+
+                <!-- THẺ 3: PHƯƠNG NGA -->
+                <article class="friend-card card-theme-red" data-index="2" data-name="Phương Nga">
+                  <div class="card-glow-bg"></div>
+                  <div class="card-flower-badge">
+                    <img src="./img/avt/Phuong_Nga.jpg" alt="Hoa Hồng Đỏ - Phương Nga" style="object-position: 50% 15%;" loading="lazy">
+                    <span class="badge-ring"></span>
+                  </div>
+                  <h3 class="card-name">Phương Nga</h3>
+                  <p class="card-flower-name">✿ Gái đẹp phố cổ</p>
+                  <div class="card-divider"></div>
+                </article>
+
+                <!-- THẺ 4: HUYỀN TRANG -->
+                <article class="friend-card card-theme-yellow" data-index="3" data-name="Huyền Trang">
+                  <div class="card-glow-bg"></div>
+                  <div class="card-flower-badge">
+                    <img src="./img/avt/Huyen_Trang.jpg" alt="Hoa Hồng Vàng - Huyền Trang" loading="lazy">
+                    <span class="badge-ring"></span>
+                  </div>
+                  <h3 class="card-name">Huyền Trang</h3>
+                  <p class="card-flower-name">✿ Monkey.D Huyền Trang</p>
+                  <div class="card-divider"></div>
+                </article>
+
+                <!-- THẺ 5: KPUIH HUYÊN -->
+                <article class="friend-card card-theme-sage" data-index="4" data-name="Kpuih Huyên">
+                  <div class="card-glow-bg"></div>
+                  <div class="card-flower-badge">
+                    <img src="./img/avt/Kpuih_Huyen.jpg" alt="Hoa Hồng Kem Thảo Mộc - Kpuih Huyên" style="object-position: 50% 25%;" loading="lazy">
+                    <span class="badge-ring"></span>
+                  </div>
+                  <h3 class="card-name">Kpuih Huyên</h3>
+                  <p class="card-flower-name">✿ Pit vi si eo</p>
+                  <div class="card-divider"></div>
+                </article>
+
+                <!-- THẺ 6: DIỆU HUYỀN -->
+                <article class="friend-card card-theme-blue" data-index="5" data-name="Diệu Huyền">
+                  <div class="card-glow-bg"></div>
+                  <div class="card-flower-badge">
+                    <img src="./img/avt/Dieu_Huyen.jpg" alt="Hoa Hồng Xanh - Diệu Huyền" loading="lazy">
+                    <span class="badge-ring"></span>
+                  </div>
+                  <h3 class="card-name">Diệu Huyền</h3>
+                  <p class="card-flower-name">✿ Cà Huyền</p>
+                  <div class="card-divider"></div>
+                </article>
+
+              </div>
+            </div>
+
+            <button class="carousel-arrow arrow-right" id="carousel-next-btn" type="button" aria-label="Thẻ kế tiếp">›</button>
+          </div>
+
+          <!-- Các chấm chỉ mục (Dots indicator) -->
+          <div class="carousel-dots" id="carousel-dots">
+            <span class="dot is-active" data-dot="0"></span>
+            <span class="dot" data-dot="1"></span>
+            <span class="dot" data-dot="2"></span>
+            <span class="dot" data-dot="3"></span>
+            <span class="dot" data-dot="4"></span>
+            <span class="dot" data-dot="5"></span>
+          </div>
+
+          <p class="carousel-nav-hint">
+            <span class="hint-arrow">←</span> Vòng thẻ đang tự động trôi từng bạn từ trái sang phải · Bấm vào thẻ để ngắm nổi bật <span class="hint-arrow">→</span>
+          </p>
+        </section>
+
+        <!-- PHẦN 3: BỨC TÂM THƯ RIÊNG GỬI TỚI 6 BẠN NỮ -->
+        <section class="heartfelt-section" id="heartfelt-section" aria-labelledby="letter-title">
+          <div class="letter-envelope-wrapper">
+            
+            <article class="parchment-letter">
+              <!-- Con dấu sáp hoa cổ điển -->
+              <div class="wax-seal" aria-hidden="true">
+                <span class="seal-flower">✿</span>
+                <span class="seal-text">20·10</span>
+              </div>
+
+              <div class="letter-meta-header">
+                <span class="letter-from">TÂM THƯ TỪ TRÁI TIM</span>
+                <span class="letter-date">20 Tháng 10</span>
+              </div>
+
+              <h2 class="letter-heading" id="letter-title">
+                Gửi 6 đóa hoa tuyệt vời<br><em>của nhóm Khiu hỏi e</em>
+              </h2>
+
+              <div class="letter-content-body">
+                <p class="letter-lead">
+                  Nhân ngày Phụ nữ Việt Nam 20/10, Út Đăng muốn gửi đến 6 nàng thơ xinh đẹp trong nhóm mình một chút tâm tình chân thành nhất từ tận đáy lòng.
+                </p>
+
+                <p>
+                  Cảm ơn các chị vì đã luôn là những mảnh ghép rực rỡ, độc đáo và không thể thiếu. Mỗi chị mang một cá tính, một sắc thái riêng: người thì dịu dàng chu đáo, người thì hoạt bát tươi vui, người lại sâu sắc tinh tế. Nhưng khi ở cạnh nhau, các chị tạo nên một nguồn năng lượng tuyệt vời khiến mỗi lần gặp nhau, đi chơi, và đồng hành cùng nhau đều trở nên ấm áp và đáng nhớ.
+                </p>
+
+                <p>
+                  Chúc các chị <strong>Cẩm Tiên, Ngọc Mai, Phương Nga, Huyền Trang, Kpuih Huyên</strong> và <strong>Diệu Huyền</strong> có một ngày 20/10 ngập tràn niềm vui, nhận được thật nhiều hoa, quà và những lời yêu thương xứng đáng nhất.
+                </p>
+
+                <p class="letter-highlight-quote">
+                  "Mong các chị luôn dịu dàng với chính mình, rực rỡ như hoa mùa hạ, tự do như ngọn gió thu và luôn mỉm cười hạnh phúc mỗi ngày!"
+                </p>
+              </div>
+
+              <!-- Lời ký tặng -->
+              <div class="letter-signature-block">
+                <span class="sign-label">Thương mến gửi từ,</span>
+                <span class="sign-name">Út Đăng ♡</span>
+                <span class="sign-note">(Chúc mừng ngày 20/10 trọn vẹn niềm vui!)</span>
+              </div>
+
+              <!-- Nút tương tác thả tim cảm xúc -->
+              <div class="letter-actions">
+                <button class="action-heart-btn" id="burst-hearts-btn" type="button">
+                  <span class="heart-icon">💖</span>
+                  <span>Tung Cánh Hoa & Thả Tim Chúc Mừng</span>
+                </button>
+              </div>
+            </article>
+
+          </div>
+        </section>
+
+        <!-- FOOTER TRANG TRỌNG -->
+        <footer class="peaceful-footer">
+          <div class="footer-blossoms" aria-hidden="true">✿ ✿ ✿</div>
+          <p class="footer-main-text">Chúc tất cả các chị có một ngày 20/10 thật hạnh phúc và trọn vẹn!</p>
+          <p class="footer-sub-text">Được làm bằng tất cả sự quý mến và chân thành của Út Đăng dành cho các chị em của Khiu hỏi e</p>
+        </footer>
+
+      </section>
+
+    </main>
+  </body>
+</html>

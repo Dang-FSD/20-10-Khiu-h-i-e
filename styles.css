@@ -1,0 +1,1240 @@
+/* ==========================================================================
+   20/10 SPECIAL CELEBRATION - LIVING BOTANICAL EXPERIENCE
+   Hệ thống hoa nở tràn ngập màn hình, carousel spotlight từng thẻ và bố cục hoa chuẩn xác
+   ========================================================================== */
+
+:root {
+  /* Bảng màu lãng mạn, hữu cơ & cao cấp */
+  --bg-cream: #faf5ee;
+  --bg-warm-sun: #fff9f0;
+  --bg-blush: #fcedeb;
+  --paper-ivory: #fffdf9;
+  
+  --ink-deep: #2a382d;
+  --ink-soft: #556658;
+  --ink-muted: #7c8c7f;
+  
+  --rose-core: #df586d;
+  --rose-soft: #f48b99;
+  --rose-glow: rgba(223, 88, 109, 0.28);
+  
+  --gold-sun: #f3be4d;
+  --gold-glow: rgba(243, 190, 77, 0.32);
+  
+  --meadow-green: #487349;
+  --meadow-deep: #2c4c2d;
+  
+  /* Font chữ */
+  --font-serif: "Playfair Display", "Cormorant Garamond", Georgia, serif;
+  --font-body: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+  --font-script: "Dancing Script", cursive, "Playfair Display", serif;
+  
+  /* Easing */
+  --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-organic: cubic-bezier(0.34, 1.45, 0.64, 1);
+  --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  min-height: 100vh;
+  min-width: 320px;
+  background-color: var(--bg-cream);
+  background-image: 
+    radial-gradient(circle at 50% 15%, #ffffff 0%, rgba(255, 246, 235, 0.85) 45%, var(--bg-cream) 100%);
+  color: var(--ink-deep);
+  font-family: var(--font-body);
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* ==========================================================================
+   CANVAS BẦU TRỜI HOA & HẠT SÁNG (60FPS CONTINUOUS ENGINE)
+   ========================================================================== */
+.ambient-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.vintage-grain {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3;
+  opacity: 0.12;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.25'/%3E%3C/svg%3E");
+}
+
+.sunbeam-glow {
+  position: fixed;
+  top: -15vh;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90vw;
+  max-width: 900px;
+  height: 65vh;
+  background: radial-gradient(ellipse at 50% 30%, rgba(255, 238, 204, 0.65) 0%, rgba(254, 215, 215, 0.35) 45%, transparent 75%);
+  pointer-events: none;
+  z-index: 0;
+  filter: blur(50px);
+  animation: sunbeam-pulse 8s ease-in-out infinite alternate;
+}
+
+@keyframes sunbeam-pulse {
+  0% { opacity: 0.7; transform: translateX(-50%) scale(0.96); }
+  100% { opacity: 1; transform: translateX(-50%) scale(1.05); }
+}
+
+.ambient-orb {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.45;
+  animation: orb-float 16s ease-in-out infinite alternate;
+}
+
+.orb-1 {
+  width: 450px;
+  height: 450px;
+  background: radial-gradient(circle, #fcd5ce 0%, transparent 70%);
+  top: 10%;
+  left: -5%;
+}
+
+.orb-2 {
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, #faedcd 0%, transparent 70%);
+  top: 40%;
+  right: -10%;
+  animation-delay: -6s;
+}
+
+@keyframes orb-float {
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(40px, 30px); }
+}
+
+/* ==========================================================================
+   WIDGET ÂM NHẠC GIAO HƯỞNG 20/10
+   ========================================================================== */
+.audio-widget {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 60;
+}
+
+.audio-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 18px 9px 12px;
+  border: 1px solid rgba(223, 88, 109, 0.25);
+  border-radius: 999px;
+  background: rgba(255, 253, 249, 0.88);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  color: var(--ink-deep);
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(78, 52, 46, 0.08);
+  transition: all 0.3s var(--ease-spring);
+}
+
+.audio-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(223, 88, 109, 0.18);
+  border-color: rgba(223, 88, 109, 0.5);
+}
+
+.disc-icon {
+  width: 22px;
+  height: 22px;
+  color: var(--rose-core);
+  display: grid;
+  place-items: center;
+  transition: transform 0.3s ease;
+}
+
+.audio-widget.is-playing .disc-icon {
+  animation: disc-spin 3s linear infinite;
+}
+
+@keyframes disc-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.sound-wave {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  height: 14px;
+}
+
+.sound-wave .bar {
+  width: 2.5px;
+  height: 4px;
+  background: var(--rose-core);
+  border-radius: 2px;
+  transition: height 0.2s ease;
+}
+
+.audio-widget.is-playing .sound-wave .bar-1 { animation: wave 0.8s ease-in-out infinite alternate; }
+.audio-widget.is-playing .sound-wave .bar-2 { animation: wave 1.1s ease-in-out 0.2s infinite alternate; }
+.audio-widget.is-playing .sound-wave .bar-3 { animation: wave 0.9s ease-in-out 0.4s infinite alternate; }
+.audio-widget.is-playing .sound-wave .bar-4 { animation: wave 1.2s ease-in-out 0.1s infinite alternate; }
+
+@keyframes wave {
+  0% { height: 4px; }
+  100% { height: 14px; }
+}
+
+.audio-text {
+  font-size: 0.78rem;
+  letter-spacing: 0.02em;
+}
+
+/* ==========================================================================
+   GIAI ĐOẠN 1: HOA MỌC LAN DẦN KÍN HẾT MÀN HÌNH (FULLSCREEN BLOOM WAVE OVERLAY)
+   ========================================================================== */
+.bloom-spread-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 40;
+  overflow: hidden;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+.bloom-spread-overlay.is-active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.bloom-spread-overlay.is-fading-out {
+  opacity: 0;
+  transition: opacity 1.1s ease;
+}
+
+.wave-flower-item {
+  position: absolute;
+  width: var(--size, 160px);
+  height: var(--size, 160px);
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0) rotate(calc(var(--rot, 0deg) - 25deg));
+  filter: drop-shadow(0 10px 24px rgba(182, 63, 83, 0.28));
+  will-change: transform, opacity;
+}
+
+.bloom-spread-overlay.is-active .wave-flower-item {
+  animation: wave-flower-bloom var(--bloom-dur, 0.65s) var(--ease-organic) var(--delay, 0s) forwards;
+}
+
+@keyframes wave-flower-bloom {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0) rotate(calc(var(--rot, 0deg) - 25deg));
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(var(--target-scale, 1)) rotate(var(--rot, 0deg));
+  }
+}
+
+.wave-flower-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+/* ==========================================================================
+   GIAI ĐOẠN 2: KHUNG HOA VIỀN VĨNH CỬU BỐ CỤC CHUẨN XÁC KHÔNG LỆCH
+   ========================================================================== */
+.fullscreen-blooming-garden {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 4;
+  overflow: hidden;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 1.2s var(--ease-smooth), visibility 1.2s ease;
+}
+
+.fullscreen-blooming-garden.is-active {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Hoa đáy màn hình: căn chuẩn đáy, chừa khoảng trống giữa cho bức thư & con dấu sáp */
+.garden-flower-node {
+  position: absolute;
+  transform-origin: bottom center;
+  transform: scale(0);
+  transition: transform 1.2s var(--ease-organic) var(--bloom-delay, 0s);
+  filter: drop-shadow(0 8px 18px rgba(182, 63, 83, 0.16));
+}
+
+.fullscreen-blooming-garden.is-active .garden-flower-node {
+  transform: scale(var(--flower-scale, 1)) rotate(var(--flower-rot, 0deg));
+}
+
+.garden-flower-node .node-stem {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: var(--stem-h, 110px);
+  background: linear-gradient(to top, #34542d 0%, #527a47 60%, #7da871 100%);
+  border-radius: 999px;
+  transform-origin: bottom center;
+}
+
+.garden-flower-node .node-leaf {
+  position: absolute;
+  width: 28px;
+  height: 16px;
+  background: linear-gradient(135deg, #8cb580 0%, #446c3b 100%);
+  border-radius: 100% 0 100% 0;
+  bottom: calc(var(--stem-h, 110px) * 0.45);
+  left: calc(50% - 24px);
+  transform: rotate(-25deg);
+}
+
+.garden-flower-node .node-leaf.leaf-right {
+  left: 50%;
+  border-radius: 0 100% 0 100%;
+  bottom: calc(var(--stem-h, 110px) * 0.65);
+  transform: rotate(25deg);
+}
+
+.garden-flower-node .node-blossom-img {
+  position: absolute;
+  bottom: calc(var(--stem-h, 110px) - 20px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: var(--flower-size, 85px);
+  height: var(--flower-size, 85px);
+  object-fit: contain;
+  filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.1));
+  animation: flower-sway-node var(--sway-dur, 5s) ease-in-out var(--sway-delay, 0s) infinite alternate;
+}
+
+@keyframes flower-sway-node {
+  0% { transform: translateX(-50%) rotate(-3.5deg); }
+  100% { transform: translateX(-50%) rotate(3.5deg); }
+}
+
+/* ==========================================================================
+   LIVING STAGE - SÂN KHẤU DUY NHẤT (CONTINUOUS UNIFIED STAGE)
+   ========================================================================== */
+.living-stage {
+  position: relative;
+  z-index: 5;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 50px 20px 140px;
+  transition: padding 0.9s var(--ease-spring);
+}
+
+/* ==========================================================================
+   PHẦN 1: BÔNG HOA KHỞI NGUYÊN (NÚT BẤM DÙNG HÌNH THẬT TÁCH NỀN)
+   ========================================================================== */
+.initial-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 680px;
+  width: 100%;
+  margin-top: 4vh;
+  position: relative;
+  transition: transform 1.2s var(--ease-spring), opacity 0.8s var(--ease-smooth), height 1.2s var(--ease-spring), margin 1.2s var(--ease-spring);
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  background: rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(223, 88, 109, 0.2);
+  border-radius: 999px;
+  color: var(--meadow-deep);
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 15px rgba(223, 88, 109, 0.08);
+}
+
+.badge-spark {
+  color: var(--rose-core);
+  font-size: 0.85rem;
+  animation: spark-spin 4s linear infinite;
+}
+
+@keyframes spark-spin {
+  0% { transform: rotate(0deg) scale(0.8); opacity: 0.6; }
+  50% { transform: rotate(180deg) scale(1.2); opacity: 1; }
+  100% { transform: rotate(360deg) scale(0.8); opacity: 0.6; }
+}
+
+.hero-title {
+  font-family: var(--font-serif);
+  font-size: clamp(2.6rem, 6.5vw, 4.4rem);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+  color: var(--ink-deep);
+  margin-bottom: 16px;
+}
+
+.title-highlight {
+  color: var(--rose-core);
+  font-style: italic;
+  font-weight: 500;
+  position: relative;
+  display: inline-block;
+}
+
+.hero-subtext {
+  font-size: clamp(1rem, 2.2vw, 1.2rem);
+  color: var(--ink-soft);
+  max-width: 480px;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+/* NÚT ĐÓA HOA THẬT TRUNG TÂM */
+.flower-trigger-wrap {
+  position: relative;
+  margin: 10px 0 20px;
+}
+
+.main-flower-button {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  outline: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  padding: 10px;
+  border-radius: 50%;
+  transition: transform 0.4s var(--ease-spring);
+}
+
+.main-flower-button:focus-visible {
+  outline: 3px solid var(--rose-soft);
+  outline-offset: 8px;
+}
+
+.flower-aura {
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 260px;
+  height: 260px;
+  background: radial-gradient(circle, rgba(254, 182, 192, 0.45) 0%, rgba(255, 230, 180, 0.28) 50%, transparent 72%);
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(20px);
+  animation: aura-breathe 4s ease-in-out infinite;
+}
+
+@keyframes aura-breathe {
+  0%, 100% { transform: translate(-50%, -50%) scale(0.9); opacity: 0.55; }
+  50% { transform: translate(-50%, -50%) scale(1.25); opacity: 0.95; }
+}
+
+.button-flower-assembly {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.real-flower-head {
+  position: relative;
+  z-index: 2;
+  width: 175px;
+  height: 175px;
+  display: grid;
+  place-items: center;
+  animation: flower-head-breath 4s ease-in-out infinite;
+  transform-origin: center bottom;
+  filter: drop-shadow(0 15px 30px rgba(223, 88, 109, 0.28));
+  transition: transform 0.6s var(--ease-spring);
+}
+
+@keyframes flower-head-breath {
+  0%, 100% { transform: scale(1) rotate(-1.5deg); }
+  50% { transform: scale(1.06) rotate(1.5deg); }
+}
+
+.hero-flower-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: transform 0.5s var(--ease-spring);
+}
+
+.main-flower-button:hover .real-flower-head {
+  transform: scale(1.15) translateY(-6px);
+  filter: drop-shadow(0 20px 40px rgba(223, 88, 109, 0.45));
+}
+
+.flower-glow-core {
+  position: absolute;
+  width: 70px;
+  height: 70px;
+  background: radial-gradient(circle, rgba(255, 230, 140, 0.7) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+  animation: core-pulse 2.5s ease-in-out infinite;
+}
+
+@keyframes core-pulse {
+  0%, 100% { transform: scale(0.8); opacity: 0.5; }
+  50% { transform: scale(1.3); opacity: 0.95; }
+}
+
+.flower-stem-svg {
+  width: 100px;
+  height: 140px;
+  margin-top: -30px;
+  overflow: visible;
+  transform-origin: 50% 100%;
+  animation: stem-wind 5s ease-in-out infinite;
+}
+
+@keyframes stem-wind {
+  0%, 100% { transform: rotate(-2deg); }
+  50% { transform: rotate(2deg); }
+}
+
+.flower-prompt {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 5px;
+  padding: 10px 24px;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(223, 88, 109, 0.35);
+  border-radius: 999px;
+  color: var(--rose-core);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  box-shadow: 0 10px 25px rgba(223, 88, 109, 0.15);
+  transition: all 0.3s var(--ease-spring);
+  animation: prompt-float 3s ease-in-out infinite;
+}
+
+@keyframes prompt-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+.main-flower-button:hover .flower-prompt {
+  background: var(--rose-core);
+  color: #ffffff;
+  border-color: var(--rose-core);
+  box-shadow: 0 12px 30px rgba(223, 88, 109, 0.35);
+  transform: translateY(-4px) scale(1.05);
+}
+
+.prompt-icon {
+  font-size: 1rem;
+}
+
+.hero-foot-note {
+  margin-top: 15px;
+  font-family: var(--font-serif);
+  font-style: italic;
+  color: var(--ink-muted);
+  font-size: 0.95rem;
+}
+
+/* Ẩn Hero khi hoa nở */
+.living-stage.is-bloomed .initial-hero {
+  transform: translateY(-20px) scale(0.95);
+  opacity: 0;
+  height: 0;
+  margin: 0;
+  overflow: hidden;
+  pointer-events: none;
+  visibility: hidden;
+}
+
+.main-flower-button.is-blooming .real-flower-head {
+  transform: scale(1.6) rotate(15deg);
+  filter: drop-shadow(0 25px 50px rgba(223, 88, 109, 0.6));
+}
+
+/* ==========================================================================
+   PHẦN 2: KHU VƯỜN ĐÃ NỞ & VÒNG CARD 6 NGƯỜI & TÂM THƯ
+   ========================================================================== */
+.bloomed-universe {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 1240px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(40px);
+  transition: opacity 1.2s var(--ease-smooth), transform 1.4s var(--ease-spring), visibility 1.2s ease;
+}
+
+.living-stage.is-bloomed .bloomed-universe {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.celebration-header {
+  text-align: center;
+  max-width: 760px;
+  margin-bottom: 35px;
+  padding: 0 16px;
+}
+
+.pill-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 20px;
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(85, 102, 88, 0.2);
+  border-radius: 999px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--meadow-deep);
+  margin-bottom: 18px;
+  box-shadow: 0 4px 16px rgba(44, 76, 45, 0.06);
+}
+
+.pill-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--rose-core);
+  border-radius: 50%;
+  animation: pulse-dot 2s infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { transform: scale(0.9); opacity: 0.6; }
+  50% { transform: scale(1.3); opacity: 1; }
+}
+
+.celebration-title {
+  font-family: var(--font-serif);
+  font-size: clamp(2.3rem, 5vw, 3.0rem);
+  font-weight: 600;
+  line-height: 1.18;
+  letter-spacing: -0.025em;
+  color: var(--ink-deep);
+  margin-bottom: 18px;
+}
+
+.celebration-title em {
+  color: var(--rose-core);
+  font-style: italic;
+  font-weight: 500;
+}
+
+.celebration-subtitle {
+  font-size: clamp(0.95rem, 2vw, 1.12rem);
+  color: var(--ink-soft);
+  line-height: 1.7;
+}
+
+/* ==========================================================================
+   VÒNG CARD 6 NGƯỜI CHẠY TỪNG THẺ SPOTLIGHT TỪ TRÁI SANG PHẢI
+   ========================================================================== */
+.carousel-block {
+  width: 100%;
+  max-width: 1100px;
+  margin-bottom: 60px;
+  position: relative;
+  padding: 10px 0 20px;
+}
+
+.carousel-subhead {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 24px;
+  padding: 0 24px;
+}
+
+.line-deco {
+  height: 1px;
+  width: 60px;
+  background: linear-gradient(90deg, transparent, rgba(223, 88, 109, 0.4), transparent);
+}
+
+.subhead-title {
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--rose-core);
+  text-transform: uppercase;
+}
+
+/* KHUNG WRAPPER SPOTLIGHT CAROUSEL */
+.spotlight-carousel-wrapper {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.spotlight-carousel-stage {
+  width: 100%;
+  max-width: 960px;
+  overflow: hidden;
+  padding: 25px 0 35px;
+  position: relative;
+  mask-image: linear-gradient(90deg, transparent 0%, #000 8%, #000 92%, transparent 100%);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 8%, #000 92%, transparent 100%);
+}
+
+.spotlight-carousel-track {
+  display: flex;
+  align-items: center;
+  transition: transform 0.65s var(--ease-spring);
+  will-change: transform;
+}
+
+/* MỖI THẺ CARD: GỌN GÀNG, BO GÓC TRÒN VỊNH & CÓ HIỆU ỨNG SPOTLIGHT */
+.friend-card {
+  position: relative;
+  width: 230px;
+  min-height: 255px;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 28px;
+  padding: 24px 18px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  box-shadow: 0 12px 30px rgba(92, 64, 51, 0.06);
+  user-select: none;
+  cursor: pointer;
+  flex-shrink: 0;
+  margin: 0 12px;
+  
+  /* Trạng thái mặc định: hơi thu nhỏ và mờ nhẹ để nhường sân khấu cho thẻ Spotlight */
+  transform: scale(0.88);
+  opacity: 0.65;
+  filter: blur(0.4px);
+  transition: transform 0.55s var(--ease-spring), opacity 0.55s ease, box-shadow 0.55s ease, filter 0.55s ease;
+}
+
+/* THẺ ĐANG SPOTLIGHT NỔI BẬT NHẤT */
+.friend-card.is-spotlight {
+  transform: scale(1.12) translateY(-8px);
+  opacity: 1;
+  filter: none;
+  z-index: 10;
+  box-shadow: 0 24px 50px rgba(223, 88, 109, 0.28);
+  border-color: rgba(223, 88, 109, 0.6);
+}
+
+.friend-card:hover {
+  opacity: 0.95;
+}
+
+.card-glow-bg {
+  position: absolute;
+  inset: 0;
+  border-radius: 28px;
+  opacity: 0.35;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.friend-card.is-spotlight .card-glow-bg {
+  opacity: 0.85;
+}
+
+/* Màu sắc của từng card */
+.card-theme-pink { border-color: rgba(223, 88, 109, 0.3); }
+.card-theme-pink .card-glow-bg { background: radial-gradient(circle at 50% 20%, #ffe3e8 0%, transparent 75%); }
+
+.card-theme-purple { border-color: rgba(162, 114, 186, 0.3); }
+.card-theme-purple .card-glow-bg { background: radial-gradient(circle at 50% 20%, #f3e6f9 0%, transparent 75%); }
+
+.card-theme-red { border-color: rgba(217, 77, 92, 0.3); }
+.card-theme-red .card-glow-bg { background: radial-gradient(circle at 50% 20%, #fde4e6 0%, transparent 75%); }
+
+.card-theme-yellow { border-color: rgba(229, 168, 59, 0.3); }
+.card-theme-yellow .card-glow-bg { background: radial-gradient(circle at 50% 20%, #fef3d8 0%, transparent 75%); }
+
+.card-theme-sage { border-color: rgba(104, 159, 118, 0.3); }
+.card-theme-sage .card-glow-bg { background: radial-gradient(circle at 50% 20%, #e7f2e9 0%, transparent 75%); }
+
+.card-theme-blue { border-color: rgba(74, 142, 184, 0.3); }
+.card-theme-blue .card-glow-bg { background: radial-gradient(circle at 50% 20%, #e2f1fa 0%, transparent 75%); }
+
+/* Khung ảnh hoa thật tách nền */
+.card-flower-badge {
+  position: relative;
+  width: 108px;
+  height: 108px;
+  border-radius: 50%;
+  margin-bottom: 12px;
+  display: grid;
+  place-items: center;
+  background: #ffffff;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.07);
+}
+
+.card-flower-badge img {
+  width: 95px;
+  height: 95px;
+  object-fit: cover; /* Ép ảnh lấp đầy toàn bộ khung mà không bị méo tỷ lệ */
+  border-radius: 50%; /* Bo tròn cắt bỏ 4 góc thừa của ảnh chữ nhật/vuông */
+  transition: transform 0.5s var(--ease-spring);
+}
+
+.friend-card.is-spotlight .card-flower-badge img {
+  transform: scale(1.1) rotate(5deg);
+}
+
+.badge-ring {
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 2px dashed rgba(223, 88, 109, 0.35);
+  animation: ring-rotate 25s linear infinite;
+}
+
+@keyframes ring-rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.card-name {
+  font-family: var(--font-serif);
+  font-size: 1.55rem;
+  font-weight: 600;
+  color: var(--ink-deep);
+  margin-bottom: 4px;
+}
+
+.card-flower-name {
+  font-size: 0.88rem;
+  color: var(--rose-core);
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.card-divider {
+  width: 34px;
+  height: 2px;
+  background: rgba(223, 88, 109, 0.25);
+  border-radius: 2px;
+}
+
+/* NÚT ĐIỀU HƯỚNG CAROUSEL TRÁI / PHẢI */
+.carousel-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid rgba(223, 88, 109, 0.35);
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(8px);
+  color: var(--rose-core);
+  font-size: 1.6rem;
+  line-height: 1;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  z-index: 20;
+  box-shadow: 0 6px 18px rgba(223, 88, 109, 0.15);
+  transition: all 0.25s var(--ease-spring);
+}
+
+.carousel-arrow:hover {
+  background: var(--rose-core);
+  color: #ffffff;
+  transform: translateY(-50%) scale(1.1);
+  box-shadow: 0 8px 24px rgba(223, 88, 109, 0.35);
+}
+
+.arrow-left { left: 0; }
+.arrow-right { right: 0; }
+
+/* CHẤM CHỈ MỤC (DOTS) */
+.carousel-dots {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.carousel-dots .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(85, 102, 88, 0.25);
+  cursor: pointer;
+  transition: all 0.3s var(--ease-spring);
+}
+
+.carousel-dots .dot.is-active {
+  width: 24px;
+  border-radius: 999px;
+  background: var(--rose-core);
+  box-shadow: 0 2px 8px rgba(223, 88, 109, 0.35);
+}
+
+.carousel-nav-hint {
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--ink-muted);
+  letter-spacing: 0.04em;
+  margin-top: 14px;
+}
+
+.hint-arrow {
+  color: var(--rose-core);
+  font-weight: bold;
+}
+
+/* ==========================================================================
+   PHẦN 3: BỨC TÂM THƯ RIÊNG GỬI 6 BẠN NỮ
+   ========================================================================== */
+.heartfelt-section {
+  width: 100%;
+  max-width: 820px;
+  margin: 20px auto 80px;
+  padding: 0 16px;
+}
+
+.letter-envelope-wrapper {
+  position: relative;
+}
+
+.parchment-letter {
+  position: relative;
+  background: var(--paper-ivory);
+  border-radius: 28px;
+  padding: clamp(40px, 7vw, 75px) clamp(24px, 6vw, 65px) clamp(35px, 6vw, 55px);
+  border: 1px solid rgba(230, 218, 198, 0.9);
+  box-shadow: 
+    0 25px 70px rgba(78, 52, 46, 0.09),
+    0 1px 3px rgba(0, 0, 0, 0.04);
+  text-align: left;
+}
+
+.wax-seal {
+  position: absolute;
+  top: -26px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 58px;
+  height: 58px;
+  background: radial-gradient(circle at 40% 35%, #eb4f68 0%, #b82b40 70%, #851829 100%);
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 
+    0 8px 20px rgba(184, 43, 64, 0.35),
+    inset 0 2px 4px rgba(255, 255, 255, 0.3),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.4);
+  border: 2px solid #a32235;
+  z-index: 10;
+}
+
+.seal-flower {
+  color: #fff2f4;
+  font-size: 1.15rem;
+  line-height: 1;
+}
+
+.seal-text {
+  color: #ffdede;
+  font-size: 0.58rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  margin-top: 1px;
+}
+
+.letter-meta-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  color: var(--ink-muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  border-bottom: 1px solid rgba(230, 218, 198, 0.6);
+  padding-bottom: 14px;
+}
+
+.letter-heading {
+  font-family: var(--font-serif);
+  font-size: clamp(2rem, 4.5vw, 3rem);
+  font-weight: 600;
+  color: var(--ink-deep);
+  line-height: 1.25;
+  margin-bottom: 24px;
+}
+
+.letter-heading em {
+  color: var(--rose-core);
+  font-style: italic;
+  font-weight: 500;
+}
+
+.letter-content-body {
+  font-size: clamp(1rem, 2vw, 1.1rem);
+  line-height: 1.95;
+  color: #3f4e42;
+}
+
+.letter-content-body p {
+  margin-bottom: 20px;
+}
+
+.letter-lead {
+  font-size: clamp(1.08rem, 2.2vw, 1.2rem);
+  color: var(--ink-deep);
+  font-weight: 500;
+}
+
+.letter-highlight-quote {
+  font-family: var(--font-serif);
+  font-size: clamp(1.15rem, 2.4vw, 1.35rem);
+  font-style: italic;
+  color: var(--rose-core);
+  padding: 18px 24px;
+  background: rgba(254, 237, 240, 0.5);
+  border-left: 3px solid var(--rose-core);
+  border-radius: 0 16px 16px 0;
+  margin: 28px 0 !important;
+  line-height: 1.6;
+}
+
+.letter-signature-block {
+  margin-top: 36px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  border-top: 1px dashed rgba(230, 218, 198, 0.8);
+  padding-top: 24px;
+}
+
+.sign-label {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 1.05rem;
+  color: var(--ink-soft);
+}
+
+.sign-name {
+  font-family: var(--font-script);
+  font-size: 2.4rem;
+  color: var(--rose-core);
+  line-height: 1.1;
+  margin-top: 4px;
+}
+
+.sign-note {
+  font-size: 0.8rem;
+  color: var(--ink-muted);
+  margin-top: 4px;
+}
+
+.letter-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 34px;
+}
+
+.action-heart-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 32px;
+  background: linear-gradient(135deg, #f47285 0%, #df435e 100%);
+  border: none;
+  border-radius: 999px;
+  color: #ffffff;
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 0.02em;
+  box-shadow: 0 10px 25px rgba(223, 67, 94, 0.32);
+  transition: all 0.3s var(--ease-spring);
+}
+
+.action-heart-btn:hover {
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 15px 32px rgba(223, 67, 94, 0.45);
+}
+
+.action-heart-btn:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.heart-icon {
+  font-size: 1.25rem;
+  animation: heart-beat 1.4s infinite;
+}
+
+@keyframes heart-beat {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.25); }
+}
+
+/* ==========================================================================
+   FOOTER TRANG TRỌNG
+   ========================================================================== */
+.peaceful-footer {
+  text-align: center;
+  padding: 40px 20px 20px;
+  color: var(--ink-muted);
+  width: 100%;
+  max-width: 600px;
+}
+
+.footer-blossoms {
+  color: var(--rose-soft);
+  font-size: 1.2rem;
+  letter-spacing: 0.5em;
+  margin-bottom: 12px;
+}
+
+.footer-main-text {
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
+  color: var(--ink-deep);
+  margin-bottom: 6px;
+}
+
+.footer-sub-text {
+  font-size: 0.78rem;
+  margin-bottom: 24px;
+}
+
+/* ==========================================================================
+   RESPONSIVE DESIGN
+   ========================================================================== */
+@media (max-width: 768px) {
+  .living-stage {
+    padding: 30px 14px 120px;
+  }
+
+  .audio-widget {
+    top: 16px;
+    right: 16px;
+  }
+
+  .initial-hero {
+    margin-top: 2vh;
+  }
+
+  .real-flower-head {
+    width: 145px;
+    height: 145px;
+  }
+
+  .friend-card {
+    width: 200px;
+    min-height: 235px;
+    padding: 20px 14px 16px;
+  }
+
+  .card-flower-badge {
+    width: 90px;
+    height: 90px;
+  }
+
+  .card-flower-badge img {
+    width: 78px;
+    height: 78px;
+  }
+
+  .parchment-letter {
+    padding: 44px 20px 32px;
+  }
+
+  .wax-seal {
+    width: 50px;
+    height: 50px;
+    top: -22px;
+  }
+
+  .action-heart-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
